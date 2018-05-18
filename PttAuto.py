@@ -22,7 +22,7 @@ class Ptt(object):
             time.sleep(5)
             self._content = self._telnet.read_very_eager().decode('big5', 'ignore')
         if u"請按任意鍵繼續" in self._content:
-            print("資訊頁面，按任意鍵繼續...")
+            print("in front page now...")
             self._telnet.write(b"\r\n")
             time.sleep(2)
         if u"您要刪除以上錯誤嘗試" in self._content:
@@ -41,9 +41,9 @@ class Ptt(object):
     @property
     def input_user_password(self):
         if u"請輸入代號" in self._content:
-            print('輸入帳號中...')
+            print('input acct'.format(self._user))
             self._telnet.write(self._user + b"\r\n")
-            print('輸入密碼中...')
+            print('input pw')
             self._telnet.write(self._password + b"\r\n")
             time.sleep(2)
             self._content = self._telnet.read_very_eager().decode('big5', 'ignore')
@@ -53,28 +53,24 @@ class Ptt(object):
     def is_connect(self):
         self._content = self._telnet.read_very_eager().decode('big5', 'ignore')
         if u"系統過載" in self._content:
-            print('系統過載, 請稍後再來')
+            print('server overload , try later')
             sys.exit(0)
         return True
 
     def login(self):
         if self.input_user_password:
-            print("----------------------------------------------")
-            print("------------------ 登入完成 ------------------")
-            print("----------------------------------------------")
+            print("login success")
             return True
-        print("沒有可輸入帳號的欄位，網站可能掛了")
+        print("ptt down, login fail")
         return False
 
     def logout(self):
-        print("登出中...")
-        # q = 上一頁，直到回到首頁為止，g = 離開，再見
+        print("logging out...")
+
         self._telnet.write(b"qqqqqqqqqg\r\ny\r\n")
         time.sleep(1)
         self._telnet.close()
-        print("----------------------------------------------")
-        print("------------------ 登出完成 ------------------")
-        print("----------------------------------------------")
+        print("logout success")
 
     def post(self, board, title, content):
         print("發文中...")
@@ -105,14 +101,17 @@ class Ptt(object):
 
 def main():
     host = 'ptt.cc'
-    user = 'Your PTT ID'
-    password = 'Your PTT Password'
-    ptt = Ptt(host, user, password)
-    time.sleep(1)
-    if ptt.is_connect():
-        if ptt.login():
-            ptt.post('test', '發文文字測試', '這是一篇測試,哇哈哈')
-    ptt.logout()
+    users = ['jn8029','msibd']
+    password = ['et265831','r1024283']
+    for i, user in enumerate(users):
+        ptt = Ptt(host, user, password[i])
+        time.sleep(1)
+        if ptt.is_connect():
+            print("using acct {}".format(user))
+            if ptt.login():
+                pass
+        ptt.logout()
+    print("done")
 
 
 if __name__ == "__main__":
