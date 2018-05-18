@@ -6,7 +6,7 @@ import logging
 
 
 logging.basicConfig(
-    filename="ptt_login.log",
+    filename="/opt/PttAutoLoginPost/ptt_login.log",
     level=logging.DEBUG,
     format='%(asctime)s %(name)-5s %(levelname)-8s %(message)s',
     datefmt='%y-%m-%d %H:%M'
